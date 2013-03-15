@@ -22,7 +22,7 @@ function start(route, handle) {
 	  
 	  var pathname = url.parse(req.url).pathname;
 	  
-	  fs.exists(filePath, function(exists) {
+	  path.exists(filePath, function(exists) {
 	    if(exists) {
 	      // serve up the file directly
 	      fs.readFile(filePath, function(error, content) {

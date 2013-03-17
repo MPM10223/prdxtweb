@@ -16,6 +16,7 @@ exports.authenticate = function(req, res){
 	var select = "select userID, clientID from users where username_e = '?' AND pwd_e = '?'";
 	nconf.env().file({ file: 'config.json' });
 	var conn = nconf.get("SQL_CONN");
+	console.log(conn);
 
 	sql.query(conn, select, [req.param('username'), req.param('password')], function(err, results) {
 		if(err)

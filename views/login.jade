@@ -3,7 +3,7 @@ extends layout
 block content
 	div.container
 		form.form-signin(action='/authenticate', enctype='multipart/form-data', method='post')
-			h2.form-signin-heading= title
+			img(src='/images/prdxt.png', width='120px;')
 			input.input-block-level(type='text', name='username', placeholder='username')
 			input.input-block-level(type='password', name='password', placeholder='password')
 			button.btn.btn-large.btn-primary(type='submit') Login

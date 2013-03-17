@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  div.navbar.navbar-inverse.navbar-fixed-top
+  	div.navbar-inner
+  		div.container
+  			button.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+  				span.icon-bar
+  				span.icon-bar
+  				span.icon-bar
+			a.brand(href='#')= title
+			div.nav-collapse.collapse
+				ul.nav
+					li.active
+						a(href='#') Home
+					li
+						a(href='#about') About
+					li
+						a(href='#contact') Contact
+	div.container
+		h1 prdxt Home
+		p I will put content here soon
+	script(src='/public/bootstrap/js/bootstrap.js'

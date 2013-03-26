@@ -2,7 +2,9 @@
 /*
  * GET home page.
  */
+ var sql = require('msnodesql'),
+	nconf = require('nconf');
 
-exports.index = function(req, res){
-	res.render('index', { title: 'Express' });
+exports.show = function(req, res){
+	res.render('index', { title: 'prdxt' });
 };

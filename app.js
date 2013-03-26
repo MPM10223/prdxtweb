@@ -6,6 +6,7 @@
 var express = require('express')
   , routes = require('./routes')
   , login = require('./routes/login')
+  , index = require('./routes/index')
   , http = require('http')
   , path = require('path');
 
@@ -30,7 +31,8 @@ app.configure('development', function(){
 app.get('/', login.show);
 app.get('/login', login.show);
 app.post('/authenticate', login.authenticate);
-app.get('/index', routes.index);
+app.get('/start', index.show);
+//app.get('/index', routes.index);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

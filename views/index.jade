@@ -1,14 +1,13 @@
 extends layout
 
 block content
-  div.navbar.navbar-inverse.navbar-fixed-top
-  	div.navbar-inner
-  		div.container
-  			button.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
-  				span.icon-bar
-  				span.icon-bar
-  				span.icon-bar
-			a.brand(href='#')= title
+	div.navbar.navbar-inverse.navbar-fixed-top
+		div.navbar-inner
+			div.container
+				button.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
 			div.nav-collapse.collapse
 				ul.nav
 					li.active
@@ -17,7 +16,19 @@ block content
 						a(href='#about') About
 					li
 						a(href='#contact') Contact
-	div.container
-		h1 prdxt Home
-		p I will put content here soon
-	script(src='/public/bootstrap/js/bootstrap.js'
+	div.main-container
+		div.logo-box
+			img(src='/images/prdxt_logo.png', width='80px;')
+		div.container
+			a.btn.btn-large.btn-primary(href='#newProblem', role='button', data-toggle='modal') Get Started
+		div#newProblem.modal.hide.fade(tabIndex='-1', role='dialog', aria-labelledby='newProblemLabel', aria-hidden='true')
+			div.modal-header
+				button.close(data-dismiss='modal', aria-hidden='true', type='button') x
+				h3#newProblemLabel New Problem
+			div.modal-body
+				p Content
+			div.modal-footer
+				button.btn Back
+				button.btn.btn-primary Continue
+	script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js')
+	script(src='/bootstrap/js/bootstrap.js')

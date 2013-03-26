@@ -3,8 +3,14 @@ extends layout
 block content
 	div.container
 		form.form-signin(action='/authenticate', enctype='multipart/form-data', method='post')
-			img(src='/images/prdxt.png', width='120px;')
+			img(src='/images/prdxt_logo.png', width='120px;')
 			input.input-block-level(type='text', name='username', placeholder='username')
 			input.input-block-level(type='password', name='password', placeholder='password')
-			button.btn.btn-large.btn-primary(type='submit') Login
-	script(src='/public/bootstrap/js/bootstrap.js')
+			div.table(style='margin-bottom: 0px;')
+				div.column
+					button.btn.btn-large.btn-primary(href='#create', data-toggle='modal') Login
+				div.column
+					- if(login_failed) {
+					h3.error(style='margin-bottom: 0px; margin-top: 0px;') Login failed
+					- }
+				div.bookend

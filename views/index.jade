@@ -20,13 +20,13 @@ block content
 		div.logo-box
 			img(src='/images/prdxt_logo.png', width='80px;')
 		div.container
-			a.btn.btn-large.btn-primary(href='#newProblem', role='button', data-toggle='modal') Get Started
+			a.btn.btn-large.btn-primary(href='/newProblem', role='button', data-toggle='modal', data-target='#newProblem') Get Started
 		div#newProblem.modal.hide.fade(tabIndex='-1', role='dialog', aria-labelledby='newProblemLabel', aria-hidden='true')
 			div.modal-header
 				button.close(data-dismiss='modal', aria-hidden='true', type='button') x
-				h3#newProblemLabel New Problem
+				h4#newProblemLabel New Problem
 			div.modal-body
-				p Content
+				p Loading...
 			div.modal-footer
 				button.btn Back
 				button.btn.btn-primary Continue

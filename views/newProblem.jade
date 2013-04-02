@@ -1,0 +1,18 @@
+div.wizard
+	div.notifications
+	div.past
+	div.future
+	div.present
+		h3 1) What data?
+		div.tab-table
+			ul.nav.nav-tabs
+				li.active
+					a(href='#newFile', data-toggle='tab') A new file
+				li
+					a(href='#existingFile', data-toggle='tab') An uploaded file
+			div.tab-content
+				div#newFile.tab-pane.active
+					form(action="/uploadFile", method="post", enctype="multipart/form-data")
+						input(type="file", name="uploadFile")
+				div#existingFile.tab-pane
+					p Coming soon

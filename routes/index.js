@@ -1,6 +1,6 @@
 
 /*
- * GET home page.
+ * GET new problem wizard.
  */
  var sql = require('msnodesql'),
 	nconf = require('nconf');

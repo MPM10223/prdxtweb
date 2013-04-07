@@ -1,18 +1,21 @@
-div.wizard
-	div.notifications
-	div.past
-	div.future
-	div.present
-		h3 1) What data?
-		div.tab-table
-			ul.nav.nav-tabs
-				li.active
-					a(href='#newFile', data-toggle='tab') A new file
-				li
-					a(href='#existingFile', data-toggle='tab') An uploaded file
-			div.tab-content
-				div#newFile.tab-pane.active
-					form(action="/uploadFile", method="post", enctype="multipart/form-data")
-						input(type="file", name="uploadFile")
-				div#existingFile.tab-pane
+extends wizard
+
+block present
+	h3 1) What data?
+	div.tab-table
+		ul.nav.nav-tabs
+			li.active
+				a#newFileLink(href='#newFile', data-toggle='tab', onclick="javascript:var activeModalForm='newFileForm';") A new file
+			li
+				a#existingFileLink(href='#existingFile', data-toggle='tab') An uploaded file
+		div.tab-content
+			div#newFile.tab-pane.active
+				form#newFileForm(action="/newProblem/uploadFile", method="post", enctype="multipart/form-data")
+					input(type="file", name="uploadFile")
+					input(type="submit", id="newFileSubmitButton", style="display: none;")
+					include ..\public\javascripts\jquery.iframe-post-form.js
+			div#existingFile.tab-pane
+				form#existingFileForm(action="/newProblem/selectFile", method="post", enctype="multipart/form-data")
 					p Coming soon
+					input(type="submit", id="existingFileSubmitButton", style="display: none;")
+	include ..\public\javascripts\newProblem.js

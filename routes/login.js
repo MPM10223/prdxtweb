@@ -6,7 +6,6 @@ var sql = require('msnodesql'),
 	nconf = require('nconf');
 
 exports.show = function(req, res){
-	console.log(req.param)
 	var login_failed = req.param('failed') == 'true';
 	res.render('login', { title: 'prdxt', login_failed: login_failed });
 };

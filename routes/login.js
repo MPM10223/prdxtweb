@@ -3,9 +3,8 @@
  * GET login page.
  */
 var sql = require('msnodesql'),
-	session = require('../session'),
 	nconf = require('nconf');
-
+	
 exports.show = function(req, res){
 	var login_failed = req.param('failed') == 'true';
 	res.render('login', { title: 'prdxt', login_failed: login_failed });
@@ -28,8 +27,8 @@ exports.authenticate = function(req, res){
 			res.redirect('/login?failed=true');
 		} else {
 			// authenticated
-			session.userID = results.userID;
-			session.clientID = results.clientID;
+			global.session.userID = results[0].userID;
+			global.session.clientID = results[0].clientID;
 			res.redirect('/start');
 		}
 	});

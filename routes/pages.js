@@ -26,8 +26,6 @@ exports.init = function(app) {
 	app.get('/newProblem/pickColumns', function(req, res) {
 		res.render('pickColumns');
 	});
-	
-	//app.post('/uploadFile', newProblem.uploadFile);
 };
  
  

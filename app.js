@@ -8,6 +8,7 @@ var express = require('express')
   , path = require('path');
   
 var pages = require('./routes/pages');
+global.session = require('./session');
 
 var app = express();
 

@@ -3,6 +3,7 @@
  * GET login page.
  */
 var sql = require('msnodesql'),
+	session = require('../session'),
 	nconf = require('nconf');
 
 exports.show = function(req, res){
@@ -27,8 +28,9 @@ exports.authenticate = function(req, res){
 			res.redirect('/login?failed=true');
 		} else {
 			// authenticated
+			session.userID = results.userID;
+			session.clientID = results.clientID;
 			res.redirect('/start');
 		}
 	});
-	return;
 };

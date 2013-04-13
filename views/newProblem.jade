@@ -10,8 +10,15 @@ block present
 				a#existingFileLink(href='#existingFile', data-toggle='tab') An uploaded file
 		div.tab-content
 			div#newFile.tab-pane.active
-				form#newFileForm(action="/newProblem/uploadFile", method="post", enctype="multipart/form-data")
-					input(type="file", name="uploadFile")
+				form#newFileForm.form-horizontal(action="/newProblem/uploadFile", method="post", enctype="multipart/form-data")
+					div.control-group
+						label.control-label(for="uploadFile") File to upload
+						div.controls
+							input(type="file", name="uploadFile")
+					div.control-group
+						label.control-label(for="problemName") Problem name
+						div.controls
+							input(type="text", name="problemName")
 					input(type="submit", id="newFileSubmitButton", style="display: none;")
 					include ..\public\javascripts\jquery.iframe-post-form.js
 			div#existingFile.tab-pane

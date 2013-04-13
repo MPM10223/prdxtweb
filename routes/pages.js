@@ -2,6 +2,7 @@
  * New node file
  */
 var login = require('./login');
+var upload = require('./upload');
 
 exports.init = function(app) {
 	
@@ -20,10 +21,7 @@ exports.init = function(app) {
 		res.render('newProblem', {wizardID: 'newProblemWizard'});
 	});
 	
-	app.post('/newProblem/uploadFile', function(req, res) {
-		//TODO: process uploaded file
-		res.render('sourceData');
-	});
+	app.post('/newProblem/uploadFile', upload.process);
 	
 	app.get('/newProblem/pickColumns', function(req, res) {
 		res.render('pickColumns');

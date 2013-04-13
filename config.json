@@ -1,3 +1,8 @@
 {
 		"SQL_CONN": "Driver={SQL Server Native Client 10.0};Server=tcp:hwvhpv4cb1.database.windows.net,1433;Database=prdxt;Uid=prdxt_web@hwvhpv4cb1;Pwd=s1mul@t3;Encrypt=yes;Connection Timeout=30;"
+		, "SQL_UID": "prdxt_web"
+		, "SQL_PWD": "s1mul@t3"
+		, "SQL_SERVER_FULL": "tcp:hwvhpv4cb1.database.windows.net,1433"
+		, "SQL_SERVER_SHORT": "hwvhpv4cb1"
+		, "SQL_DATABASE": "prdxt"
 }

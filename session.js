@@ -1,0 +1,6 @@
+/**
+ * session.js
+ */
+
+ var session = {};
+ 

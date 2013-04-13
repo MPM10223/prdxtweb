@@ -39,9 +39,7 @@ exports.process = function(req, res) {
 			var dropIfExistsSQL = "IF object_id('"+tableName+"') IS NOT NULL DROP TABLE ["+tableName+"]";
 			sql.query(conn, dropIfExistsSQL, function(err, results) {
 			
-				if(err) {
-					//TODO: handle errors
-				}
+				if(err) throw err;
 			
 				// 2.2) CREATE destination table in SQL
 				var createSQL = "CREATE TABLE dbo.["+tableName+"] (["+idColumn+"] int not null identity(1,1)";
@@ -53,17 +51,13 @@ exports.process = function(req, res) {
 				
 				sql.query(conn, createSQL, function(err, results) {
 				
-					if(err) {
-						//TODO: handle errors
-					}
+					if(err) throw err;
 				
 					// 2.3) DROP BCP destination view in SQL if it already exists
 					var dropViewIfExistsSQL = "IF object_id('"+viewName+"') IS NOT NULL DROP VIEW ["+viewName+"]";
 					sql.query(conn, dropViewIfExistsSQL, function(err, results) {
 
-						if(err) {
-							//TODO: handle errors
-						}
+						if(err) throw err;
 					
 						// 2.3) CREATE BCP destination view in SQL (trick to get around identity column)
 						var viewSQL = "CREATE VIEW dbo.["+viewName+"] AS SELECT ";
@@ -76,13 +70,13 @@ exports.process = function(req, res) {
 						
 						sql.query(conn, viewSQL, function(err, results) {
 
-							if(err) {
-								//TODO: handle errors
-							}
+							if(err) throw err;
 						
 							// 3) run command-line bcp to push raw, pivoted data into SQL
 							var cmd = 'bcp dbo.[' + viewName + '] in ' + path + ' -S ' + serverFull + ' -d ' + database + ' -U ' + username + '@' + server + ' -P ' + password + ' -c -t , -F 2';
 							exec(cmd, function(err, stdout, stderr) {
+								
+								if(err) throw err;
 								
 								// %d rows copied.
 								var pattern = /(\d+) rows copied./;

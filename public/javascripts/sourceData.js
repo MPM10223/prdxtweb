@@ -3,6 +3,7 @@
  */
 $(function() {
 	var $newProblem = $('#newProblem');
+	var $indexContent = $('#indexContent');
 	
 	if(!$newProblem.length) {
 		return;
@@ -17,6 +18,7 @@ $(function() {
 	var $modalContinueButton = $modalFooter.find('.btn-primary');
 	var $modalBackButton = $modalFooter.find('#back');
 	
+	$modalContinueButton.text = 'Finish';
 	$modalContinueButton.off('click');
 	$modalContinueButton.on('click', function(ev) {
 		$columnsForm.submit();
@@ -29,7 +31,8 @@ $(function() {
 			, url: $columnsForm.attr('action')
 			, data: { form: $columnsForm.serialize() }
 		}).done(function(response) {
-			$modalBody.html(response);
+			$newProblem.modal('hide');
+			$indexContent.html(response);
 		});
 	});
 	

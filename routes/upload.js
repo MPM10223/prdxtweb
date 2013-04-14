@@ -171,23 +171,36 @@ exports.defineColumns = function(req, res) {
 	nconf.env().file({ file: 'config.json' });
 	var conn = nconf.get("SQL_CONN");
 	
-	sql.query(conn, updateSQL, [ problemID ], function(err, results) {
+	sql.query(conn, updateSQL, [ problemID ], function(err, results, more) {
 		if(err) throw err;
+		console.log('columns ' + more);
 		// refresh / create the problem view
-		var updateViewSQL = "exec p_updateProblemView ?";
-		sql.query(conn, updateViewSQL, [ problemID ], function(err, results, more) {
-			if(err) throw err;
-			if (!more) {
-				// kick off the job
-				var startJobSQL = "exec p_solveProblem ?";
-				sql.query(conn, startJobSQL, [ problemID ], function(err, results, more) {
-					if(err) throw err;
-					if(!more) {
-						// render the problem status page
-						res.render('problemStatus', {wizardID: 'newProblemWizard'});
-					}
-				});
-			}
-		});
+		if (!more) {
+			var updateViewSQL = "exec p_updateProblemView ?";
+			sql.query(conn, updateViewSQL, [ problemID ], function(err, results, more) {
+				if(err) throw err;
+				console.log('view ' + more);
+				if (!more) {
+					// kick off the job
+					var startJobSQL = "exec p_solveProblem ?";
+					sql.query(conn, startJobSQL, [ problemID ], function(err, results, more) {
+						if(err) throw err;
+						console.log('jobqueue ' + more);
+						if(!more) {
+							// get the initial jobs list
+							var jobsListSQL = "SELECT problemID, algoName, build_status, build_runTime, build_progress, eval_status, eval_runTime, eval_progress, accuracy FROM dbo.vw_problemProgress WHERE problemID = ?";
+							sql.query(conn, jobsListSQL, [ problemID ], function(err, results, more) {
+								if(err) throw err;
+								console.log('jobslist ' + results.length);
+								if(!more) {
+									// render the problem status page
+									res.render('problemStatus', {problemID: problemID, jobsList: results});
+								}
+							});
+						}
+					});
+				}
+			});
+		}
 	});
 }

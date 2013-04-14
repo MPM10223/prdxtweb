@@ -19,7 +19,7 @@ block content
 	div.main-container
 		div.logo-box
 			img(src='/images/prdxt_logo.png', width='80px;')
-		div.container
+		div#indexContent.container
 			a.btn.btn-large.btn-primary(href='/newProblem', role='button', data-toggle='modal', data-target='#newProblem') Get Started
 		- modalID = 'newProblem'; modalTitle = 'New Problem';
 		include modal

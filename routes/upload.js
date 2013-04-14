@@ -16,7 +16,10 @@ exports.process = function(req, res) {
 	
 	var tableName = 'raw_' + name.replace('.csv', '');
 	var viewName = 'vw_' + name.replace('.csv', '');
+	
 	var idColumn = 'rowID';
+	var numPreviewRows = 20;
+	var fieldDelimiter = ',';
 	
 	nconf.env().file({ file: 'config.json' });
 	var username = nconf.get('SQL_UID');
@@ -25,12 +28,21 @@ exports.process = function(req, res) {
 	var server = nconf.get('SQL_SERVER_SHORT');
 	var database = nconf.get('SQL_DATABASE');
 	
-	// 1) comb header of CSV to get column names
+	var previewRows = [];
+	new lazy(fs.createReadStream(path))
+		.lines
+		.skip(1)
+		.take(numPreviewRows)
+		.map(function(line) {
+			previewRows.push(line.toString().trim().split(fieldDelimiter));
+		});
+	
+	// 1) comb header of CSV to get column names	
 	new lazy(fs.createReadStream(path))
 		.lines
 		.take(1)
 		.map(function(line) {
-			var columns = line.toString().trim().split(',');
+			var columns = line.toString().trim().split(fieldDelimiter);
 			
 			// 2.1) DROP destination table in SQL if it already exists
 			var conn = nconf.get("SQL_CONN");
@@ -73,7 +85,7 @@ exports.process = function(req, res) {
 							if(err) throw err;
 						
 							// 3) run command-line bcp to push raw, pivoted data into SQL
-							var cmd = 'bcp dbo.[' + viewName + '] in ' + path + ' -S ' + serverFull + ' -d ' + database + ' -U ' + username + '@' + server + ' -P ' + password + ' -c -t , -F 2';
+							var cmd = 'bcp dbo.[' + viewName + '] in ' + path + ' -S ' + serverFull + ' -d ' + database + ' -U ' + username + '@' + server + ' -P ' + password + ' -c -t ' + fieldDelimiter + ' -F 2';
 							exec(cmd, function(err, stdout, stderr) {
 								
 								if(err) throw err;
@@ -82,18 +94,36 @@ exports.process = function(req, res) {
 								var pattern = /(\d+) rows copied./;
 								var numRows = pattern.exec(stdout)[1];
 								
+								// temporary measure to keep from data proliferation
+								//global.session.userID = 'breakthis';
+								if(typeof global.session.userID == 'undefined') {
+									//TODO: don't do this.
+									global.session.userID = 1;
+								}
+								
 								// 4) run stored procedure to parse pivoted data into normalized problem data
-								var parseSQL = "exec p_parseRawInputData '"+tableName+"', '"+problemName+"', "+global.session.userID+", '"+idColumn+"'";
-								console.log(parseSQL);
+								var parseSQL = "DECLARE @problemID int "
+									+"exec @problemID = p_parseRawInputData ?, ?, ?, ? "
+									+"SELECT @problemID as problemID";
 								
-								sql.query(conn, parseSQL, function(err, results) {
+								sql.query(conn, parseSQL, [tableName, problemName, global.session.userID, idColumn], function(err, results, more) {
 								
-									if(err) {
-										console.log(err);
+									if(err) throw err;
+
+									if(results.length > 0) {
+										
+										var problemID = results[0].problemID;
+									
+										// 5) send back a preview of the uploaded file
+										res.render('sourceData', { 
+											wizardID: 'newProblemWizard'
+											, fname : name
+											, columns : columns
+											, numRows : numRows
+											, previewRows : previewRows
+											, problemID : problemID
+										});
 									}
-								
-									// 5) send back a list of columns and row count
-									res.render('sourceData', { filepath : path, fname : name, filetype : type, columns: columns, numRows: numRows } );
 								});
 							});
 						});
@@ -102,4 +132,62 @@ exports.process = function(req, res) {
 			});
 		});
 };
- 
+
+exports.defineColumns = function(req, res) {
+
+	var colFields = req.body.form.split('&');
+	var problemID = -1;
+	
+	var ivCaseStatement = "CASE featureID";
+	var dvCaseStatement = "CASE featureID";
+	
+	colFields.forEach(function(colField) {
+		var colFieldParts = colField.split('=');
+		
+		if(colFieldParts[0].charAt(0) == 'c') {
+			var featureID = colFieldParts[0].split('_')[2];
+			var fieldValue = colFieldParts[1];
+			var caseElement = " WHEN " + featureID + " THEN " + fieldValue;
+			
+			if(colFieldParts[0].charAt(4) == 'i') {
+				ivCaseStatement += caseElement;
+			} else {
+				dvCaseStatement += caseElement;
+			}
+			
+		} else if (colFieldParts[0] == 'problemID') {
+			problemID = colFieldParts[1];
+		} else {
+			throw 'unrecognized field: ' + colField;
+		}
+	});
+	
+	ivCaseStatement += " ELSE 0 END";
+	dvCaseStatement += " ELSE 0 END";
+
+	// update the feature metadata	
+	var updateSQL = "UPDATE problemFeatures SET isIV = " + ivCaseStatement + ", isDV = " + dvCaseStatement + " WHERE problemID = ?";
+	
+	nconf.env().file({ file: 'config.json' });
+	var conn = nconf.get("SQL_CONN");
+	
+	sql.query(conn, updateSQL, [ problemID ], function(err, results) {
+		if(err) throw err;
+		// refresh / create the problem view
+		var updateViewSQL = "exec p_updateProblemView ?";
+		sql.query(conn, updateViewSQL, [ problemID ], function(err, results, more) {
+			if(err) throw err;
+			if (!more) {
+				// kick off the job
+				var startJobSQL = "exec p_solveProblem ?";
+				sql.query(conn, startJobSQL, [ problemID ], function(err, results, more) {
+					if(err) throw err;
+					if(!more) {
+						// render the problem status page
+						res.render('problemStatus', {wizardID: 'newProblemWizard'});
+					}
+				});
+			}
+		});
+	});
+}

@@ -1,6 +1,21 @@
-h2 Source Data!
-p File path: #{filepath}
-p File name: #{fname}
-p File type: #{filetype}
-p No. Rows: #{numRows}
-p Columns: #{columns}
+extends wizard
+
+block present
+	h3 2) What to predict?
+	form#columnsForm(action="/newProblem/defineColumns", method="post")
+		input(type="hidden", name="problemID", value="#{problemID}")
+		table.table.table-bordered.table-striped.table-condensed.table-hover
+			caption
+				h4 #{fname} (first #{previewRows.length} rows of #{numRows})
+			thead#columnHeaders
+				tr
+					each column, i in columns
+						th(id="col_#{i + 2}") #{column}
+							input(type="hidden", name="col_iv_#{i + 2}", value="0")
+							input(type="hidden", name="col_dv_#{i + 2}", value="0")
+			tbody
+				each row in previewRows
+					tr
+						each column, i in columns
+							td #{row[i]}
+	script(src="/javascripts/sourceData.js")

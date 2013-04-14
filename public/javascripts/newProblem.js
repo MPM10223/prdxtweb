@@ -38,7 +38,10 @@ $(function() {
 		}
 	});
 	
+	$modalContinueButton.off('click');
 	$modalContinueButton.on('click', function(ev) {
 		activeFormSubmitButton.click();
 	});
+	
+	//TODO: bind back button
 });

@@ -22,10 +22,7 @@ exports.init = function(app) {
 	});
 	
 	app.post('/newProblem/uploadFile', upload.process);
-	
-	app.get('/newProblem/pickColumns', function(req, res) {
-		res.render('pickColumns');
-	});
+	app.post('/newProblem/defineColumns', upload.defineColumns);
 };
  
  

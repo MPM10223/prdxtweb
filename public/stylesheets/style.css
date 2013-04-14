@@ -84,3 +84,16 @@ div.bookend {
   background-color: #fff;
   display: block;
 }
+
+.iv {
+  background-color: #81bef7;
+}
+
+.dv {
+  background-color: #faac58;
+}
+
+.modal {
+  width: 80%;
+  left: 33%;
+}

@@ -10,7 +10,8 @@ block content
 				div.column
 					button.btn.btn-large.btn-primary Login
 				div.column
-					- if(login_failed) {
-					h3.error(style='margin-bottom: 0px; margin-top: 0px;') Login failed
-					- }
+					if login_failed
+						h3.error(style='margin-bottom: 0px; margin-top: 0px;') Login failed
+					if session_expired
+						h3.error(style='margin-bottom: 0px; margin-top: 0px;') Session expired
 				div.bookend

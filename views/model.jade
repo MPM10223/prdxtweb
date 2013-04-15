@@ -1,0 +1,32 @@
+extends index
+
+block breadcrumbs
+	ul.breadcrumb
+		li
+			a(href="/start") Problems
+			span.divider /
+		li
+			a(href="/problem?problemID=#{problemID}") #{problemName}
+			span.divider /
+		li.active #{algoName}
+
+block pageContent
+	h2 #{algoName} > #{problemName}
+	h3 #{modelName}
+	a.btn.btn-large.btn-primary(href='/predict?modelID=#{modelID}') Predict
+	div#modelDetails.accordion
+		div.accordion-group
+			div.accordion-heading
+				a.accordion-toggle(data-toggle="collapse", data-parent="#modelDetails", href="#modelFeatures") Model Inputs
+			div#modelFeatures.accordion-body.collapse
+				div.accordion-inner
+					table.table
+						thead
+							tr
+								th Input Name
+								th Importance
+						tbody
+							each feature in features
+								tr
+									td #{feature.featureName}
+									td

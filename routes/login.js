@@ -7,7 +7,8 @@ var sql = require('msnodesql'),
 	
 exports.show = function(req, res){
 	var login_failed = req.param('failed') == 'true';
-	res.render('login', { title: 'prdxt', login_failed: login_failed });
+	var session_expired = req.param('sessionExpired') == 'true';
+	res.render('login', { title: 'prdxt', login_failed: login_failed, session_expired: session_expired });
 };
 
 exports.authenticate = function(req, res) {
@@ -32,6 +33,10 @@ exports.authenticate = function(req, res) {
 };
 
 exports.start = function(req, res) {
+	if(typeof global.session.userID == 'undefined') {
+		res.redirect('/login?sessionExpired=true');
+	}
+
 	var userID = global.session.userID;
 	var clientID = global.session.clientID;
 

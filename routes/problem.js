@@ -1,5 +1,5 @@
 /**
- * upload.js
+ * problem.js
  */
 var nconf = require('nconf');
 var sql = require('msnodesql');
@@ -18,14 +18,14 @@ exports.show = function(req, res) {
 			var problemName = results[0].problemName;
 			
 			// get the initial jobs list
-			var jobsListSQL = "SELECT problemID, algoName, build_status, build_runTime, build_progress, eval_status, eval_runTime, eval_progress, accuracy FROM dbo.vw_problemProgress WHERE problemID = ?";
+			var jobsListSQL = "SELECT algoName, build_status, build_runTime, build_progress, eval_status, eval_runTime, eval_progress, modelID, accuracy FROM dbo.vw_problemProgress WHERE problemID = ? ORDER BY accuracy DESC";
 			sql.query(conn, jobsListSQL, [ problemID ], function(err, results, more) {
 				if(err) throw err;
 				if(!more) {
 					// render the problem status page
 					res.render('problem', {problemID: problemID, problemName: problemName, jobsList: results});
 				}
-			});			
+			});
 		}
 	});
 };

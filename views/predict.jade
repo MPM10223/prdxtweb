@@ -1,0 +1,38 @@
+extends index
+
+block breadcrumbs
+	ul.breadcrumb
+		li
+			a(href="/start") Problems
+			span.divider /
+		li
+			a(href="/problem?problemID=#{problemID}") #{problemName}
+			span.divider /
+		li
+			a(href="/model?modelID=#{modelID}") #{algoName}
+			span.divider /
+		li.active Predict
+
+block pageContent
+	h3 Predict&nbsp;
+		span.error #{problemName}
+		| &nbsp;based on&nbsp;
+		span.error #{algoName}
+	ul.nav.nav-tabs
+		li.active
+			a(href="#predictOne", data-toggle="tab") Predict One
+		li
+			a(href="#predictMany", data-toggle="tab") Predict Many
+	div.tab-content
+		div#predictOne.tab-pane.active
+			form.form-horizontal(action="/predict/single", method="post")
+				each feature in features
+					div.control-group
+						label.control-label(for="feature#{feature.featureID}") #{feature.featureName}
+						div.controls
+							input(id="feature#{feature.featureID}", type="text", name="feature#{feature.featureID}", placeholder="#{feature.avgValue}")
+				div.control-group
+					div.controls
+						button.btn.btn-primary(type="submit") Predict
+		div#predictMany.tab-pane
+			p Coming soon!

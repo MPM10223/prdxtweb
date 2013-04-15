@@ -22,12 +22,20 @@ block pageContent
 		tbody
 			each job in jobsList
 				tr
-					td #{job.algoName}
+					if job.modelID == ''
+						td #{job.algoName}
+					else
+						td
+							a(href="/model?modelID=#{job.modelID}") #{job.algoName}
 					if job.build_status != 'Completed'
 						td Building #{job.build_status}
 					else
 						td Evaluation #{job.eval_status}
 					td
-						div.progress.progress-striped.active
-							div.bar(style="width: #{(job.build_progress + job.eval_progress) / 2}%")
+						if job.build_progress < 1 || job.eval_progress < 1
+							div.progress.progress-striped.active
+								div.bar(style="width: #{(job.build_progress + job.eval_progress) / 2 * 100.0}%")
+						else
+							div.progress.progress-striped
+								div.bar(style="width: #{(job.build_progress + job.eval_progress) / 2 * 100.0}%")
 					td #{job.accuracy}

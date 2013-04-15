@@ -4,6 +4,7 @@
 var login = require('./login');
 var upload = require('./upload');
 var problem = require('./problem');
+var model = require('./model');
 
 exports.init = function(app) {
 	
@@ -25,6 +26,8 @@ exports.init = function(app) {
 	
 	// problems
 	app.get('/problem', problem.show)
+	app.get('/model', model.show)
+	app.get('/predict', model.predict)
 };
  
  

@@ -26,6 +26,7 @@ block pageContent
 	div.tab-content
 		div#predictOne.tab-pane.active
 			form.form-horizontal(action="/predict/single", method="post")
+				input(type="hidden", name="modelID", value="#{modelID}")
 				each feature in features
 					div.control-group
 						label.control-label(for="feature#{feature.featureID}") #{feature.featureName}
@@ -34,5 +35,13 @@ block pageContent
 				div.control-group
 					div.controls
 						button.btn.btn-primary(type="submit") Predict
+				hr
+				div.control-group
+					label.control-label(for="prediction") Prediction
+					div.controls
+						span#prediction.uneditable-input
 		div#predictMany.tab-pane
 			p Coming soon!
+
+block append jsScripts
+	script(type="text/javascript", defer="defer", src="/javascripts/predict.js")

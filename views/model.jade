@@ -13,7 +13,8 @@ block breadcrumbs
 block pageContent
 	h2 #{algoName} > #{problemName}
 	h3 #{modelName}
-	a.btn.btn-large.btn-primary(href='/predict?modelID=#{modelID}') Predict
+	div(style="padding-bottom: 20px;")
+		a.btn.btn-large.btn-primary(href='/predict?modelID=#{modelID}') Predict
 	div#modelDetails.accordion
 		div.accordion-group
 			div.accordion-heading

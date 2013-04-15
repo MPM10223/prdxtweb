@@ -135,8 +135,6 @@ exports.process = function(req, res) {
 
 exports.defineColumns = function(req, res) {
 
-	console.log(req.body);
-
 	//var colFields = req.body.form.split('&');
 	var problemID = -1;
 	

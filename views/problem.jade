@@ -1,5 +1,12 @@
 extends index
 
+block breadcrumbs
+	ul.breadcrumb
+		li
+			a(href="/start") Problems
+			span.divider /
+		li.active #{problemName}
+
 block pageContent
 	h3 #{problemName}
 	div.progress

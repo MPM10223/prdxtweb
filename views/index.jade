@@ -16,9 +16,12 @@ block content
 						a(href='/about') About
 					li
 						a(href='/contact') Contact
-	div.main-container
-		div.logo-box
+	div.main-container.table
+		div.logo-box.column
 			img(src='/images/prdxt_logo.png', width='80px;')
+		div#breadcrumbs.column
+			block breadcrumbs
+		div.bookend
 		div#indexContent.container
 			block pageContent
 		- modalID = 'newProblem'; modalTitle = 'New Problem';

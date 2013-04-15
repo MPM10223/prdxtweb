@@ -11,15 +11,15 @@ block content
 			div.nav-collapse.collapse
 				ul.nav
 					li.active
-						a(href='#') Home
+						a(href='/start') Home
 					li
-						a(href='#about') About
+						a(href='/about') About
 					li
-						a(href='#contact') Contact
+						a(href='/contact') Contact
 	div.main-container
 		div.logo-box
 			img(src='/images/prdxt_logo.png', width='80px;')
 		div#indexContent.container
-			a.btn.btn-large.btn-primary(href='/newProblem', role='button', data-toggle='modal', data-target='#newProblem') Get Started
+			block pageContent
 		- modalID = 'newProblem'; modalTitle = 'New Problem';
 		include modal

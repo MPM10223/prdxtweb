@@ -14,26 +14,15 @@ $(function() {
 	
 	var $columnsForm = $newProblem.find('#columnsForm');
 	var $columnHeaders = $newProblem.find('#columnHeaders');
+	var $problemIDInput = $columnsForm.find('input[name="problemID"]');
 	
 	var $modalContinueButton = $modalFooter.find('.btn-primary');
 	var $modalBackButton = $modalFooter.find('#back');
 	
-	$modalContinueButton.text = 'Finish';
+	$modalContinueButton.text('Finish');
 	$modalContinueButton.off('click');
 	$modalContinueButton.on('click', function(ev) {
 		$columnsForm.submit();
-	});
-	
-	$columnsForm.on('submit', function(ev) {
-		ev.preventDefault();
-		$.ajax({
-			type: $columnsForm.attr('method')
-			, url: $columnsForm.attr('action')
-			, data: { form: $columnsForm.serialize() }
-		}).done(function(response) {
-			$newProblem.modal('hide');
-			$indexContent.html(response);
-		});
 	});
 	
 	//TODO: bind back button

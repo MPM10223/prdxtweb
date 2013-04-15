@@ -3,6 +3,7 @@
  */
 var login = require('./login');
 var upload = require('./upload');
+var problem = require('./problem');
 
 exports.init = function(app) {
 	
@@ -12,17 +13,18 @@ exports.init = function(app) {
 	app.post('/authenticate', login.authenticate);
 	
 	// home
-	app.get('/start', function(req, res) {
-		res.render('index');
-	});
+	app.get('/start', login.start);
 	
 	// new problem wizard
 	app.get('/newProblem', function(req, res) {
-		res.render('newProblem', {wizardID: 'newProblemWizard'});
+		res.render('newProblem', { wizardID: 'newProblemWizard' });
 	});
 	
 	app.post('/newProblem/uploadFile', upload.process);
 	app.post('/newProblem/defineColumns', upload.defineColumns);
+	
+	// problems
+	app.get('/problem', problem.show)
 };
  
  

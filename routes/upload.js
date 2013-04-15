@@ -18,7 +18,7 @@ exports.process = function(req, res) {
 	var viewName = 'vw_' + name.replace('.csv', '');
 	
 	var idColumn = 'rowID';
-	var numPreviewRows = 20;
+	var numPreviewRows = 10;
 	var fieldDelimiter = ',';
 	
 	nconf.env().file({ file: 'config.json' });
@@ -135,32 +135,32 @@ exports.process = function(req, res) {
 
 exports.defineColumns = function(req, res) {
 
-	var colFields = req.body.form.split('&');
+	console.log(req.body);
+
+	//var colFields = req.body.form.split('&');
 	var problemID = -1;
 	
 	var ivCaseStatement = "CASE featureID";
 	var dvCaseStatement = "CASE featureID";
 	
-	colFields.forEach(function(colField) {
-		var colFieldParts = colField.split('=');
-		
-		if(colFieldParts[0].charAt(0) == 'c') {
-			var featureID = colFieldParts[0].split('_')[2];
-			var fieldValue = colFieldParts[1];
+	for(var colField in req.body) {
+		if(colField.charAt(0) == 'c') {
+			var featureID = colField.split('_')[2];
+			var fieldValue = req.body[colField];
 			var caseElement = " WHEN " + featureID + " THEN " + fieldValue;
 			
-			if(colFieldParts[0].charAt(4) == 'i') {
+			if(colField.split('_')[1].charAt(0) == 'i') {
 				ivCaseStatement += caseElement;
 			} else {
 				dvCaseStatement += caseElement;
 			}
 			
-		} else if (colFieldParts[0] == 'problemID') {
-			problemID = colFieldParts[1];
+		} else if (colField == 'problemID') {
+			problemID = req.body[colField];
 		} else {
 			throw 'unrecognized field: ' + colField;
 		}
-	});
+	}
 	
 	ivCaseStatement += " ELSE 0 END";
 	dvCaseStatement += " ELSE 0 END";
@@ -173,30 +173,18 @@ exports.defineColumns = function(req, res) {
 	
 	sql.query(conn, updateSQL, [ problemID ], function(err, results, more) {
 		if(err) throw err;
-		console.log('columns ' + more);
 		// refresh / create the problem view
 		if (!more) {
 			var updateViewSQL = "exec p_updateProblemView ?";
 			sql.query(conn, updateViewSQL, [ problemID ], function(err, results, more) {
 				if(err) throw err;
-				console.log('view ' + more);
 				if (!more) {
 					// kick off the job
 					var startJobSQL = "exec p_solveProblem ?";
 					sql.query(conn, startJobSQL, [ problemID ], function(err, results, more) {
 						if(err) throw err;
-						console.log('jobqueue ' + more);
 						if(!more) {
-							// get the initial jobs list
-							var jobsListSQL = "SELECT problemID, algoName, build_status, build_runTime, build_progress, eval_status, eval_runTime, eval_progress, accuracy FROM dbo.vw_problemProgress WHERE problemID = ?";
-							sql.query(conn, jobsListSQL, [ problemID ], function(err, results, more) {
-								if(err) throw err;
-								console.log('jobslist ' + results.length);
-								if(!more) {
-									// render the problem status page
-									res.render('problemStatus', {problemID: problemID, jobsList: results});
-								}
-							});
+							res.redirect('/problem?problemID='+problemID);
 						}
 					});
 				}

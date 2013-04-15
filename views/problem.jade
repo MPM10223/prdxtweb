@@ -1,0 +1,26 @@
+extends index
+
+block pageContent
+	h3 #{problemName}
+	div.progress
+		div.bar(style="width: 0%;")
+	table.table.table-hover
+		caption
+		thead
+			tr
+				th Predictive Algorithm
+				th Status
+				th Progress
+				th Score
+		tbody
+			each job in jobsList
+				tr
+					td #{job.algoName}
+					if job.build_status != 'Completed'
+						td Building #{job.build_status}
+					else
+						td Evaluation #{job.eval_status}
+					td
+						div.progress.progress-striped.active
+							div.bar(style="width: #{(job.build_progress + job.eval_progress) / 2}%")
+					td #{job.accuracy}

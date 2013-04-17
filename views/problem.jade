@@ -9,9 +9,10 @@ block breadcrumbs
 
 block pageContent
 	h3 #{problemName}
-	div.progress
-		div.bar(style="width: 0%;")
-	table.table.table-hover
+	input#problemID(type="hidden", value="#{problemID}")
+	div#problemProgress.progress.active
+		div.bar(style="width: #{problemProgress / problemSize * 100.0}%;")
+	table#algosTable.table.table-hover
 		caption
 		thead
 			tr
@@ -21,21 +22,24 @@ block pageContent
 				th Score
 		tbody
 			each job in jobsList
-				tr
-					if job.modelID == ''
+				tr(id="algo#{job.algoID}")
+					if job.modelID == null
 						td #{job.algoName}
 					else
 						td
 							a(href="/model?modelID=#{job.modelID}") #{job.algoName}
-					if job.build_status != 'Completed'
-						td Building #{job.build_status}
+					if job.eval_status == null
+						td(id="algoStatus#{job.algoID}") Building #{job.build_status}
 					else
-						td Evaluation #{job.eval_status}
+						td(id="algoStatus#{job.algoID}") Evaluation #{job.eval_status}
 					td
 						if job.build_progress < 1 || job.eval_progress < 1
-							div.progress.progress-striped.active
+							div.progress.progress-striped.active(id="algoProgress#{job.algoID}")
 								div.bar(style="width: #{(job.build_progress + job.eval_progress) / 2 * 100.0}%")
 						else
-							div.progress.progress-striped
+							div.progress.progress-striped(id="algoProgress#{job.algoID}")
 								div.bar(style="width: #{(job.build_progress + job.eval_progress) / 2 * 100.0}%")
-					td #{job.accuracy}
+					td(id="algoAccuracy#{job.algoID}") #{job.accuracy}
+
+block append jsScripts
+	script(type="text/javascript", defer="defer", src="/javascripts/problem.js")

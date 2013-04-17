@@ -26,6 +26,7 @@ exports.init = function(app) {
 	
 	// problems
 	app.get('/problem', problem.show);
+	app.get('/problem/status', problem.getStatus);
 	app.get('/model', model.show);
 	app.get('/predict', model.predict);
 	app.post('/predict/single', model.predictSingle);

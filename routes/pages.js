@@ -29,6 +29,7 @@ exports.init = function(app) {
 	app.get('/model', model.show);
 	app.get('/predict', model.predict);
 	app.post('/predict/single', model.predictSingle);
+	app.get('/predict/single/result', model.getPrediction);
 };
  
  

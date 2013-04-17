@@ -126,3 +126,35 @@ exports.predictSingle = function(req, res) {
 		}
 	});
 };
+
+exports.getPrediction = function(req, res) {
+	var jobID = req.param('jobID');
+	
+	nconf.env().file({ file: 'config.json' });
+	var conn = nconf.get("SQL_CONN");
+	
+	var statusSQL = "SELECT jobStatus, progress, returnVal FROM jobQueue WHERE jobID = ?";
+	sql.query(conn, statusSQL, [ jobID ], function(err, results, more) {
+		if(err) throw err;
+		if(!more) {
+			var status = results[0].jobStatus;
+			var response = {};
+			
+			if(status == 0 || status == 1) {
+				// still working
+				var progress = results[0].progress;
+				response = { completed: false, progress: progress };
+			} else if (status == 2) {
+				// finished
+				var prediction = results[0].returnVal;
+				response = { completed: true, success: true, prediction: prediction };
+			} else if (status == 3) {
+				// failed
+				response = { completed: true, success: false };
+			}
+			
+			res.write(JSON.stringify(response));
+			res.end();
+		}
+	});
+};

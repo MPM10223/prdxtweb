@@ -25,7 +25,7 @@ block pageContent
 			a(href="#predictMany", data-toggle="tab") Predict Many
 	div.tab-content
 		div#predictOne.tab-pane.active
-			form.form-horizontal(action="/predict/single", method="post")
+			form.form-horizontal
 				input(type="hidden", name="modelID", value="#{modelID}")
 				each feature in features
 					div.control-group

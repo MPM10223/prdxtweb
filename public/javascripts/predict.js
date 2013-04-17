@@ -16,11 +16,41 @@ $(function() {
 	$predictOneForm.on('submit', function(ev) {
 		$prediction.text('submitting...');
 		$.ajax({
-			type: $predictOneForm.attr('method')
-			, url: $predictOneForm.attr('action')
+			type: "post"
+			, url: "/predict/single"
 			, data: $predictOneForm.serialize()
 		}).done(function(res) {
 			$prediction.text('processing...');
+			$prediction.addClass('processing');
+			
+			var json = $.parseJSON(res);
+			var jobID = json.jobID;
+			
+			// from http://techoctave.com/c7/posts/60-simple-long-polling-example-with-javascript-and-jquery
+			(function poll() {
+				setTimeout(function() {
+					$.ajax({
+						url: "/predict/single/result?jobID="+jobID
+						, success: function(data) {
+							if(data.completed) {
+								$prediction.removeClass('processing');
+								if(data.success) {
+									$prediction.text(data.prediction);
+								} else {
+									$prediction.addClass('error');
+									$prediction.text("An error occurred");
+								}
+							}
+						}
+						, dataType: "json"
+						, complete: function() {
+							if($prediction.hasClass('processing')) {
+								poll(); // recursion
+							}
+						}
+					});
+				}, 5000);
+			})();
 		});
 		return false;
 	});

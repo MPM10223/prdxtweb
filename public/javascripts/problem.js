@@ -35,7 +35,7 @@ $(function() {
 						var progress = (newData.build_progress + newData.eval_progress) / 2;
 						var progressBar = row.find(".progress .bar");
 						progressBar.attr('style', 'width: ' + progress * 100.0 + '%;');
-						if(progress == 1) progressBar.removeClass("active");
+						if(progress >= 1.0) progressBar.removeClass("active");
 						
 						// accuracy
 						if(newData.accuracy != null) {
@@ -45,8 +45,11 @@ $(function() {
 						// model link (if completed)
 						if(newData.modelID != null) {
 							var algoCell = row.children("td:nth-child(1)");
-							var algoName = algoCell.text();
-							algoCell.text('<a href="/model?modelID='+algoID+'">'+algoName+'</a>');
+							if(!algoCell.children('a')) {
+								var algoName = algoCell.text();
+								algoCell.text('');
+								algoCell.append('<a href="/model?modelID='+newData.modelID+'">'+algoName+'</a>');
+							}
 						}
 						
 						problemProgress += progress;

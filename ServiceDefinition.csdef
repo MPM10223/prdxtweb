@@ -1,0 +1,8 @@
+<ServiceDefinition name="prdxtwebservice" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition">
+   <WebRole name="prdxtwebrole">
+      <Startup>
+         <Task commandLine="\startup\startup.cmd" executionContext="elevated" taskType="background">
+         </Task>
+      </Startup>
+   </WebRole>
+</ServiceDefinition>

@@ -1,0 +1,1 @@
+..\lib\sqlncli.msi /qn IACCEPTSQLNCLILICENSETERMS=YES

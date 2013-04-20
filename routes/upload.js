@@ -85,10 +85,13 @@ exports.process = function(req, res) {
 							if(err) throw err;
 						
 							// 3) run command-line bcp to push raw, pivoted data into SQL
-							var cmd = 'bcp dbo.[' + viewName + '] in ' + path + ' -S ' + serverFull + ' -d ' + database + ' -U ' + username + '@' + server + ' -P ' + password + ' -c -t ' + fieldDelimiter + ' -F 2';
+							var cmd = '.\\lib\\bcp dbo.[' + viewName + '] in ' + path + ' -S ' + serverFull + ' -d ' + database + ' -U ' + username + '@' + server + ' -P ' + password + ' -c -t ' + fieldDelimiter + ' -F 2';
 							exec(cmd, function(err, stdout, stderr) {
 								
 								if(err) throw err;
+								
+								console.log('stdout:'+stdout);
+								console.log('stderr:'+stderr);
 								
 								// %d rows copied.
 								var pattern = /(\d+) rows copied./;

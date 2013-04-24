@@ -8,12 +8,17 @@ var model = require('./model');
 
 exports.init = function(app) {
 	
+	// public home
+	app.get('/', function (req, res) { res.redirect('/home'); });
+	app.get('/home', function (req, res) { global.session.userID = 0; res.render('home', {url: 'home'}); });
+	app.get('/about', function (req, res) { res.render('about', {url: 'about'}); });
+	app.get('/contact', function (req, res) { res.render('contact', {url: 'contact'}); });
+	
 	// login
-	app.get('/', login.show);
 	app.get('/login', login.show);
 	app.post('/authenticate', login.authenticate);
 	
-	// home
+	// user home
 	app.get('/start', login.start);
 	
 	// new problem wizard

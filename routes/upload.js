@@ -97,13 +97,6 @@ exports.process = function(req, res) {
 								var pattern = /(\d+) rows copied./;
 								var numRows = pattern.exec(stdout)[1];
 								
-								// temporary measure to keep from data proliferation
-								//global.session.userID = 'breakthis';
-								if(typeof global.session.userID == 'undefined') {
-									//TODO: don't do this.
-									global.session.userID = 1;
-								}
-								
 								// 4) run stored procedure to parse pivoted data into normalized problem data
 								var parseSQL = "DECLARE @problemID int "
 									+"exec @problemID = p_parseRawInputData ?, ?, ?, ? "

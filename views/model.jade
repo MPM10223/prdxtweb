@@ -2,9 +2,13 @@ extends index
 
 block breadcrumbs
 	ul.breadcrumb
-		li
-			a(href="/start") Problems
-			span.divider /
+		if global.session.userID > 0
+			li
+				a(href="/start") Problems
+				span.divider /
+		else
+			li.active Problems
+				span.divider /
 		li
 			a(href="/problem?problemID=#{problemID}") #{problemName}
 			span.divider /

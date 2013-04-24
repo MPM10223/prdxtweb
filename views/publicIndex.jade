@@ -1,0 +1,37 @@
+extends layout
+
+block content
+	div.logo-box.column(style="padding-left: 35px; position: absolute; top: 0px; margin-top: 15px; z-index: 10;")
+		img(src='/images/prdxt_logo.png', width='80px;')
+	div.navbar-wrapper
+		div.container
+			div.navbar.navbar-inverse
+				div.navbar-inner
+					button.btn.btn-navbar(type="button", data-toggle="collapse", data-target=".nav-collapse")
+						span.icon-bar
+						span.icon-bar
+						span.icon-bar
+					a.brand(href="/home") prdxt
+					div.nav-collapse.collapse
+						ul.nav
+							li(class="#{url == 'home' ? 'active' : ''}")
+								a(href="/home") Home
+							li(class="#{url == 'login' ? 'active' : ''}")
+								a(href="/login") Login
+							li(class="#{url == 'about' ? 'active' : ''}")
+								a(href="/about") About
+							li(class="#{url == 'contact' ? 'active' : ''}")
+								a(href="/contact") Contact
+	div(style="margin-top: 70px;")
+		block pageContent
+	hr.featurette-divider
+	footer
+		p.pull-right
+			a(href="#") Back to top
+		p &copy; 2013, prdxt
+		
+block append head
+	link(rel='stylesheet', href='/stylesheets/public.css')
+
+block meta
+	meta simple free cheap predictive analytics machine learning

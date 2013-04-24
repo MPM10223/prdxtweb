@@ -3,10 +3,12 @@
  */
 $(function() {
 	var $problemProgress = $('#problemProgress');
+	var $champion = $('#champion');
 	var $algosTable = $('#algosTable');
 	var $problemID = $('#problemID');
+	var $predictButton = $('btn#predict');
 	
-	if(!$algosTable.length) {
+	if(!$problemProgress.length) {
 		return;
 	}
 	
@@ -18,8 +20,8 @@ $(function() {
 			$.ajax({
 				url: "/problem/status?problemID=" + $problemID.attr('value')
 				, success: function(data) {
-					var problemProgress = 0.0;
-					var problemSize = 0.0;
+					var problemProgress = data["problemProgress"];
+					var problemSize = data["problemSize"];
 					
 					// update progress made on each algorithm
 					$algoRows.each(function() {
@@ -35,6 +37,7 @@ $(function() {
 						var progress = (newData.build_progress + newData.eval_progress) / 2;
 						var progressBar = row.find(".progress .bar");
 						progressBar.attr('style', 'width: ' + progress * 100.0 + '%;');
+						console.log('progress: ' + progress);
 						if(progress >= 1.0) progressBar.removeClass("active");
 						
 						// accuracy
@@ -51,14 +54,31 @@ $(function() {
 								algoCell.append('<a href="/model?modelID='+newData.modelID+'">'+algoName+'</a>');
 							}
 						}
-						
-						problemProgress += progress;
-						problemSize += 1.0;
 					});
 					
 					// set the overall problem progress bar
+					console.log('problemProgress: ' + problemProgress);
 					$problemProgressBar.attr("style", "width: " + problemProgress / problemSize * 100.0 + "%;");
-					if(problemProgress == problemSize) $problemProgressBar.removeClass("active"); 
+					if(problemProgress >= problemSize) {
+						$problemProgressBar.removeClass("active");
+					}
+					
+					// update the champion
+					if(data.bestScore == Number.MIN_VALUE) {
+						// no champion yet
+						$champion.children('h4').text('Running algorithms...');
+						$predictButton.hide();
+					} else if (problemProgress < problemSize) {
+						// still in progress, but have champion
+						$champion.children('h4').text('Best score so far: ' + data.bestScore);
+						$champion.children('a').attr('href','/predict/single?modelID=' + data.bestModelID);
+						$predictButton.show();
+					} else {
+						// done
+						$champion.children('h4').text('Finished with score of: ' + data.bestScore);
+						$champion.children('a').attr('href','/predict?modelID=' + data.bestModelID);
+						$predictButton.show();
+					}
 				}
 				, dataType: "json"
 				, complete: function() {

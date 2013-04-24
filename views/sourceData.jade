@@ -2,6 +2,13 @@ extends wizard
 
 block present
 	h3 2) What to predict?
+	span Click column headers to select which ones to use
+	div.table
+		div.column.dv
+		div.column column to predict
+	div.table
+		div.column.iv
+		div.column descriptive columns
 	form#columnsForm(action="/newProblem/defineColumns", method="post")
 		input(type="hidden", name="problemID", value="#{problemID}")
 		table.table.table-bordered.table-striped.table-condensed.table-hover

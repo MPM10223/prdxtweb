@@ -35,6 +35,8 @@ exports.authenticate = function(req, res) {
 exports.start = function(req, res) {
 	if(typeof global.session.userID == 'undefined') {
 		res.redirect('/login?sessionExpired=true');
+	} else if (global.session.userID == 0) {
+		res.redirect('/home')
 	}
 
 	var userID = global.session.userID;

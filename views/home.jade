@@ -1,0 +1,74 @@
+extends publicIndex
+
+block pageContent
+	div(style="position: relative; margin-bottom: -210px; margin-left: 185px; z-index: 10;")
+		h1(style="font-size: 54px; color: #006;") dead simple predictive&nbsp;
+			span.keyword analytics
+		h1 easy. accurate. free to try.
+	div#carousel.carousel.slide
+		div.carousel-inner
+			div.item.active
+				img(src="/images/stocks.png", width="1500px;", height="300px;", style="opacity: 0.5")
+				div.container
+					div.carousel-caption
+						h1 Predict the market.
+						p.lead Employ cutting edge machine learning techniques to predict stock movements. Just upload any historic stock returns data and let the nerds do the rest in the cloud.
+						a.btn.btn-large.btn-primary(href='/newProblem', role='button', data-toggle='modal', data-target='#newProblem') Try It Out
+			div.item
+				img(src="/images/sales.jpg", width="1500px;", height="300px;", style="opacity: 0.5")
+				div.container
+					div.carousel-caption
+						h1 Predict future sales.
+						p.lead Figure out when and where product flies off the shelf. Give us historic sales data and we'll let our predictive algorithms loose on it. They'll automatically learn the patterns and give you the power to predict the future.
+						a.btn.btn-large.btn-primary(href='/newProblem', role='button', data-toggle='modal', data-target='#newProblem') Try It Out
+			div.item
+				img(src="/images/customers.jpg", width="1500px;", height="300px;", style="opacity: 0.5")
+				div.container
+					div.carousel-caption
+						h1 Find the best customers.
+						p.lead Learn what kinds of customers spend the most, and then target the whales. Upload a list of your customers, their historic spend, and everything you know about them. We'll do the rest in the cloud.
+						a.btn.btn-large.btn-primary(href='/newProblem', role='button', data-toggle='modal', data-target='#newProblem') Try It Out
+		a.left.carousel-control(href="#carousel", data-slide="prev") &lsaquo;
+		a.right.carousel-control(href="#carousel", data-slide="next") &rsaquo;
+	h1.question(style="margin-bottom: 80px;") here's how it&nbsp;
+		span.keyword works:
+	div.container.marketing
+		div.row
+			div.span4
+				img.class-circle(style="width: 140px; height: 140px;", src="/images/upload.jpg")
+				h2 1) Upload some data
+				p All you need is a .csv file with some historic data. Each row represents one "observation" (e.g. a customer or a store), and each column represents a data element. One of those columns is what you're trying to predict; the rest are other things you know about each observation that might help explain what you're trying to predict.
+			div.span4
+				img.class-circle(style="width: 140px; height: 140px;", src="/images/pickpredict.jpg")
+				h2 2) Pick what to predict
+				p Tell us which column you're trying to predict, and which descriptive columns could help us predict it. We'll detect which of those descriptive columns matter and how they should be transformed to maximize predictive power. 
+			div.span4
+				img.class-circle(style="width: 140px; height: 140px;", src="/images/pressgo.jpg")
+				h2 3) Press go. Sit back and relax.
+				p We automatically employ a swarm of advanced machine learning techniques, assess each one's accuracy on your data, and pick out the cream of the crop to make predictions. The list of algorithms is growing every day as our community of predictive analytics gurus adds to the toolkit.
+	div(style="text-align: center;")
+		a.btn.btn-large.btn-primary(href='/newProblem', role='button', data-toggle='modal', data-target='#newProblem') Try It Out
+	hr.featurette-divider
+	h1.question why&nbsp;
+		span.keyword prdxt?
+	div.featurette
+		img.featurette-image.pull-right(src="/images/simple.jpg")
+		h2.featurette-heading Simple beats complicated.&nbsp;
+			span.muted It's not rocket science.
+		p.lead Prediction problems are simple. The solutions are complicated. But who says you have to hire data scientists and arm them with expensive statistical software? 90% of leveraging predictive analytics is just getting someone to use it. Get your whole organization predicting with a simple, fun web-based tool. Today.
+	hr.featurette-divider
+	div.featurette
+		img.featurette-image.pull-left(src="/images/open.jpg")
+		h2.featurette-heading Open beats closed.&nbsp;
+			span.muted Let our platform connect you to a global community of nerds.
+		p.lead We pit your problem against a constantly expanding army of algorithms to give you the most accurate answer in existence. Our community of data scientists, researchers, and applied statisticians are constantly coming up with new ideas. That means the most cutting edge machine learning research from academia is being applied directly to your business problem. Can your fixed feature list do that?
+	hr.featurette-divider
+	div.featurette
+		img.featurette-image.pull-right(src="/images/cheap.jpg")
+		h2.featurette-heading Cheap beats expensive.&nbsp;
+			span.muted The best things in life are free.
+		p.lead Automation and the cloud come together in beautiful harmony to keep even the smallest budgets intact. It's free to try, and plans start at just $50 / month.
+	div(style="text-align: center;")
+		a.btn.btn-large.btn-primary(href='/newProblem', role='button', data-toggle='modal', data-target='#newProblem') Try It Out
+	- modalID = 'newProblem'; modalTitle = 'Try it out';
+	include modal

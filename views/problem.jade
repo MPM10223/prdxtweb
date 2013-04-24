@@ -2,9 +2,13 @@ extends index
 
 block breadcrumbs
 	ul.breadcrumb
-		li
-			a(href="/start") Problems
-			span.divider /
+		if global.session.userID > 0
+			li
+				a(href="/start") Problems
+				span.divider /
+		else
+			li.active Problems
+				span.divider /
 		li.active #{problemName}
 
 block pageContent
@@ -12,34 +16,57 @@ block pageContent
 	input#problemID(type="hidden", value="#{problemID}")
 	div#problemProgress.progress.active
 		div.bar(style="width: #{problemProgress / problemSize * 100.0}%;")
-	table#algosTable.table.table-hover
-		caption
-		thead
-			tr
-				th Predictive Algorithm
-				th Status
-				th Progress
-				th Score
-		tbody
-			each job in jobsList
-				tr(id="algo#{job.algoID}")
-					if job.modelID == null
-						td #{job.algoName}
-					else
-						td
-							a(href="/model?modelID=#{job.modelID}") #{job.algoName}
-					if job.eval_status == null
-						td(id="algoStatus#{job.algoID}") Building #{job.build_status}
-					else
-						td(id="algoStatus#{job.algoID}") Evaluation #{job.eval_status}
-					td
-						if job.build_progress < 1 || job.eval_progress < 1
-							div.progress.progress-striped.active(id="algoProgress#{job.algoID}")
-								div.bar(style="width: #{(job.build_progress + job.eval_progress) / 2 * 100.0}%")
+	div#champion
+		if bestScore != Number.MIN_VALUE
+			if problemProgress < problemSize
+				h4 Best score so far: #{bestScore}
+				a.btn.btn-large.btn-primary(href="/predict?modelID=#{bestModelID}") Predict
+			else
+				h4 Finished with score of: #{bestScore}
+				a.btn.btn-large.btn-primary(href="/predict?modelID=#{bestModelID}") Predict
+		else
+			h4 Running algorithms...
+			a.btn.btn-large.btn-primary(href="#", style="display: none;") Predict
+	if typeof(global.session.userID) != 'undefined' && global.session.userID > 0 
+		table#algosTable.table.table-hover
+			caption
+			thead
+				tr
+					th Predictive Algorithm
+					th Status
+					th Progress
+					th Score
+			tbody
+				each job in jobsList
+					tr(id="algo#{job.algoID}")
+						if job.modelID == null
+							td #{job.algoName}
 						else
-							div.progress.progress-striped(id="algoProgress#{job.algoID}")
-								div.bar(style="width: #{(job.build_progress + job.eval_progress) / 2 * 100.0}%")
-					td(id="algoAccuracy#{job.algoID}") #{job.accuracy}
+							td
+								a(href="/model?modelID=#{job.modelID}") #{job.algoName}
+						if job.eval_status == null
+							td(id="algoStatus#{job.algoID}") Building #{job.build_status}
+						else
+							td(id="algoStatus#{job.algoID}") Evaluation #{job.eval_status}
+						td
+							if job.build_progress < 1 || job.eval_progress < 1
+								div.progress.progress-striped.active(id="algoProgress#{job.algoID}")
+									div.bar(style="width: #{(job.build_progress + job.eval_progress) / 2 * 100.0}%")
+							else
+								div.progress.progress-striped(id="algoProgress#{job.algoID}")
+									div.bar(style="width: #{(job.build_progress + job.eval_progress) / 2 * 100.0}%")
+						td(id="algoAccuracy#{job.algoID}") #{job.accuracy}
+	else
+		div#carousel.carousel.slide(style="margin-top: 30px;")
+			div.carousel-inner(style="height: 300px;")
+				div.item.active
+					img(src="/images/neuralnet.jpg")
+				div.item
+					img(src="/images/searchgraph.jpg")
+				div.item
+					img(src="/images/hardware.jpg")
+			a.left.carousel-control(href="#carousel", data-slide="prev") &lsaquo;
+			a.right.carousel-control(href="#carousel", data-slide="next") &rsaquo;
 
 block append jsScripts
 	script(type="text/javascript", defer="defer", src="/javascripts/problem.js")

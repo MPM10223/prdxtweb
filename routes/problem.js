@@ -24,9 +24,17 @@ exports.show = function(req, res) {
 				if(!more) {
 					var problemProgress = 0.0;
 					var problemSize = 0.0;
+					var bestScore = Number.MIN_VALUE;
+					var bestModelID = -1;
+					
 					for(row in results) {
 						problemProgress += (results[row].build_progress + results[row].eval_progress) / 2;
 						problemSize += 1;
+						
+						if(results[row].accuracy != null && results[row].accuracy > bestScore) {
+							bestScore = results[row].accuracy;
+							bestModelID = results[row].modelID;
+						}
 					}
 				
 					// render the problem status page
@@ -34,6 +42,8 @@ exports.show = function(req, res) {
 						problemID: problemID
 						, problemName: problemName
 						, problemProgress: problemProgress
+						, bestScore: bestScore
+						, bestModelID: bestModelID
 						, problemSize: problemSize
 						, jobsList: results
 					});
@@ -55,6 +65,11 @@ exports.getStatus = function(req, res) {
 		if(!more) {
 			var response = {};
 			
+			var problemProgress = 0.0;
+			var problemSize = 0.0;
+			var bestScore = Number.MIN_VALUE;
+			var bestModelID = -1;
+			
 			for(row in results) {
 				var result = results[row];
 			
@@ -66,7 +81,20 @@ exports.getStatus = function(req, res) {
 					, modelID: result.modelID
 					, accuracy: result.accuracy
 				};
+				
+				if(result.accuracy != null && result.accuracy > bestScore) {
+					bestScore = result.accuracy;
+					bestModelID = result.modelID;
+				}
+				
+				problemProgress += (result.build_progress + result.eval_progress) / 2;
+				problemSize += 1;
 			}
+			
+			response["problemProgress"] = problemProgress;
+			response["problemSize"] = problemSize;
+			response["bestScore"] = bestScore;
+			response["bestModelID"] = bestModelID;
 			
 			res.write(JSON.stringify(response));
 			res.end();

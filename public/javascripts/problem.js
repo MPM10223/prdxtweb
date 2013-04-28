@@ -37,8 +37,7 @@ $(function() {
 						var progress = (newData.build_progress + newData.eval_progress) / 2;
 						var progressBar = row.find(".progress .bar");
 						progressBar.attr('style', 'width: ' + progress * 100.0 + '%;');
-						console.log('progress: ' + progress);
-						if(progress >= 1.0) progressBar.removeClass("active");
+						if(progress >= 1.0) row.find(".progress").removeClass("active");
 						
 						// accuracy
 						if(newData.accuracy != null) {
@@ -46,9 +45,12 @@ $(function() {
 						}
 						
 						// model link (if completed)
+						console.log(newData.modelID);
 						if(newData.modelID != null) {
 							var algoCell = row.children("td:nth-child(1)");
-							if(!algoCell.children('a')) {
+							console.log(algoCell.children('a'));
+							if(algoCell.children('a').length == 0) {
+								console.log(algoCell.text());
 								var algoName = algoCell.text();
 								algoCell.text('');
 								algoCell.append('<a href="/model?modelID='+newData.modelID+'">'+algoName+'</a>');
@@ -57,10 +59,9 @@ $(function() {
 					});
 					
 					// set the overall problem progress bar
-					console.log('problemProgress: ' + problemProgress);
 					$problemProgressBar.attr("style", "width: " + problemProgress / problemSize * 100.0 + "%;");
 					if(problemProgress >= problemSize) {
-						$problemProgressBar.removeClass("active");
+						$problemProgress.removeClass("active");
 					}
 					
 					// update the champion

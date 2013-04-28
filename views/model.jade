@@ -18,6 +18,7 @@ block pageContent
 	h2 #{algoName} > #{problemName}
 	h3 #{modelName}
 	div(style="padding-bottom: 20px;")
+		input#modelID(type="hidden", value="#{modelID}")
 		a.btn.btn-large.btn-primary(href='/predict?modelID=#{modelID}') Predict
 	div#modelDetails.accordion
 		div.accordion-group
@@ -25,13 +26,22 @@ block pageContent
 				a.accordion-toggle(data-toggle="collapse", data-parent="#modelDetails", href="#modelFeatures") Model Inputs
 			div#modelFeatures.accordion-body.collapse
 				div.accordion-inner
-					table.table
+					table#modelFeaturesTable.table
 						thead
 							tr
 								th Input Name
 								th Importance
+								th Direction
 						tbody
 							each feature in features
 								tr
 									td #{feature.featureName}
 									td
+										div.progress.progress-success
+											div.bar(style="width: #{feature.importance / totalFeatureImportance * 100.0}%;")
+									td
+										div(id="featurePlot_#{feature.featureID}")
+										
+block append jsScripts
+	script(type='text/javascript', defer='defer', src='http://www.google.com/jsapi')
+	script(type='text/javascript', defer='defer', src='/javascripts/model.js')

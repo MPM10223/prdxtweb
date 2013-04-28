@@ -32,7 +32,10 @@ exports.init = function(app) {
 	// problems
 	app.get('/problem', problem.show);
 	app.get('/problem/status', problem.getStatus);
+	
+	// models
 	app.get('/model', model.show);
+	app.get('/model/elasticity', model.getElasticityData)
 	app.get('/predict', model.predict);
 	app.post('/predict/single', model.predictSingle);
 	app.get('/predict/single/result', model.getPrediction);

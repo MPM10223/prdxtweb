@@ -19,10 +19,18 @@ exports.show = function(req, res) {
 			var problemID = results[0].problemID;
 			var problemName = results[0].problemName;
 			
-			var featuresSQL = "SELECT mf.inputIndex, mf.featureID, pf.featureName FROM modelFeatures mf JOIN problemFeatures pf ON mf.problemID = pf.problemID AND mf.featureID = pf.featureID WHERE mf.modelID = ?";
+			var featuresSQL = "SELECT featureID, featureName, avgImpactPct as importance FROM vw_modelFeatureImportance WHERE modelID = ? ORDER BY avgImpactPct DESC, featureID ASC"
 			sql.query(conn, featuresSQL, [ modelID ], function(err, results, more) {
 				if(err) throw err;
 				if(!more) {
+					
+					var totalImportance = 0;
+					
+					for(row in results) {
+						var result = results[row];
+						totalImportance += result.importance;
+					}
+					
 					res.render("model", { 
 						modelID: modelID
 						, modelName: modelName
@@ -30,6 +38,7 @@ exports.show = function(req, res) {
 						, problemID: problemID
 						, problemName: problemName
 						, features: results
+						, totalFeatureImportance: totalImportance
 					});
 				}
 			});
@@ -155,6 +164,89 @@ exports.getPrediction = function(req, res) {
 			
 			res.write(JSON.stringify(response));
 			res.end();
+		}
+	});
+};
+
+exports.getElasticityData = function(req, res) {
+	var modelID = req.param('modelID');
+	
+	nconf.env().file({ file: 'config.json' });
+	var conn = nconf.get("SQL_CONN");
+	
+	
+	var featuresSQL = "SELECT i.featureID, i.avgImpactPct, e.value, e.mean, e.rangeMin, e.rangeMax, e.zScore, e.prediction FROM vw_modelFeatureElasticities e JOIN vw_modelFeatureImportance i ON e.modelID = i.modelID AND e.featureID = i.featureID WHERE e.modelID = ? ORDER BY i.avgImpactPct DESC, i.featureID ASC, e.value ASC";
+	sql.query(conn, featuresSQL, [ modelID ], function(err, results, more) {
+		if(err) throw err;
+		if(!more) {
+			
+			var features = {};
+			
+			var featureID = -1;
+			var featureName;
+			var featureImportance;
+			var featureMean;
+			var featureMin;
+			var featureMax;
+			var avgPrediction;
+			var featureElastData = [];
+			
+			var totalImportance = 0;
+			var minPrediction;
+			var maxPrediction;
+			
+			for(row in results) {
+				var result = results[row];
+
+				if(result.featureID != featureID) {
+					if(featureElastData.length > 0) {
+						features[featureID] = {
+							featureName: featureName
+							, importance: featureImportance
+							, featureMean: featureMean
+							, featureMin: featureMin
+							, featureMax: featureMax
+							, avgPrediction: avgPrediction
+							, plotData: featureElastData
+						};
+					}
+					
+					featureID = result.featureID;
+					featureName = result.featureName;
+					featureImportance = result.avgImpactPct;
+					featureMean = result.mean;
+					featureMin = result.rangeMin;
+					featureMax = result.rangeMax;
+					featureElastData = [];
+					
+					totalImportance += featureImportance;
+				}
+				
+				if(result.zScore == 0) avgPrediction = result.prediction;
+				if(typeof(minPrediction) == 'undefined' || result.prediction < minPrediction) minPrediction = result.prediction;
+				if(typeof(maxPrediction) == 'undefined' || result.prediction > maxPrediction) maxPrediction = result.prediction;
+				
+				featureElastData.push({ x: result.value, y: result.prediction });
+				
+				totalImportance += result.importance;
+			}
+			
+			features[featureID] = {
+				featureName: featureName
+				, importance: featureImportance
+				, featureMean: featureMean
+				, rangeMin: featureMin
+				, rangeMax: featureMax
+				, avgPrediction: avgPrediction
+				, plotData: featureElastData
+			};
+			
+			features["minPrediction"] = minPrediction;
+			features["maxPrediction"] = maxPrediction;
+			
+			res.write(JSON.stringify(features));
+			res.end();
+
 		}
 	});
 };

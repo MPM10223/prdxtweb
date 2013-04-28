@@ -18,5 +18,5 @@ block pageContent
 						a(href="/problem?problemID=#{problem.problemID}") #{problem.problemName}
 					td #{problem.dateCreated}
 	a.btn.btn-large.btn-primary(href='/newProblem', role='button', data-toggle='modal', data-target='#newProblem') #{problems.length == 0 ? 'Get Started' : 'New Problem'}
-	- modalID = 'newProblem'; modalTitle = 'New Problem';
+	- modalID = 'newProblem'; modalTitle = 'New Problem'; wizardButtons = true;
 	include modal

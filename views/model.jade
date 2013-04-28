@@ -35,13 +35,16 @@ block pageContent
 						tbody
 							each feature in features
 								tr
-									td #{feature.featureName}
+									td
+										a(id="showFeature#{feature.featureID}", href="#") #{feature.featureName}
 									td
 										div.progress.progress-success
 											div.bar(style="width: #{feature.importance / totalFeatureImportance * 100.0}%;")
 									td
 										div(id="featurePlot_#{feature.featureID}")
-										
+	- modalID = 'featureScatterplot'; modalTitle = 'Feature Details'; wizardButtons = false;
+	include modal
+
 block append jsScripts
 	script(type='text/javascript', defer='defer', src='http://www.google.com/jsapi')
 	script(type='text/javascript', defer='defer', src='/javascripts/model.js')

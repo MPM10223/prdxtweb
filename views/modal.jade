@@ -2,8 +2,12 @@ div.modal.hide.fade(id= modalID, tabIndex='-1', role='dialog', aria-labelledby='
 	div.modal-header
 		button.close(data-dismiss='modal', aria-hidden='true', type='button') x
 		h4#modalLabel= modalTitle
-	div.modal-body
+	div.modal-body(style="max-height: 600px;")
 		p Loading...
 	div.modal-footer
-		button.btn#back Back
-		button.btn.btn-primary Continue
+		- if (typeof(wizardButtons) == 'undefined' || !wizardButtons) {
+			button.btn(data-dismiss="modal", aria-hidden="true") Close
+		- } else {
+			button.btn#back Back
+			button.btn.btn-primary Continue
+		- }

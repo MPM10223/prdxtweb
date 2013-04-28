@@ -174,7 +174,6 @@ exports.getElasticityData = function(req, res) {
 	nconf.env().file({ file: 'config.json' });
 	var conn = nconf.get("SQL_CONN");
 	
-	
 	var featuresSQL = "SELECT i.featureID, i.avgImpactPct, e.value, e.mean, e.rangeMin, e.rangeMax, e.zScore, e.prediction FROM vw_modelFeatureElasticities e JOIN vw_modelFeatureImportance i ON e.modelID = i.modelID AND e.featureID = i.featureID WHERE e.modelID = ? ORDER BY i.avgImpactPct DESC, i.featureID ASC, e.value ASC";
 	sql.query(conn, featuresSQL, [ modelID ], function(err, results, more) {
 		if(err) throw err;
@@ -249,4 +248,49 @@ exports.getElasticityData = function(req, res) {
 
 		}
 	});
+};
+
+exports.getFeatureData = function(req, res) {
+	var modelID = req.param('modelID');
+	var featureID = req.param('featureID');
+	
+	nconf.env().file({ file: 'config.json' });
+	var conn = nconf.get("SQL_CONN");
+	
+	var dataSQL = "EXEC p_getFeatureDVData ?, ?";
+	sql.query(conn, dataSQL, [ modelID, featureID ], function(err, results, more) {
+		if(err) throw err;
+		if(!more) {
+			
+			var plotData = results;
+			
+			var dvNameSQL = "SELECT f.featureName FROM models m JOIN problemFeatures f ON f.problemID = m.problemID WHERE m.modelID = ? AND f.isDV = 1";
+			sql.query(conn, dvNameSQL, [ modelID ], function(err, results, more) {
+				if(err) throw err;
+				if(!more) {
+				
+					var dvName = results[0].featureName;
+
+					var featureSQL = "SELECT f.featureName, e.mean, e.prediction FROM vw_modelFeatureElasticities e JOIN problemFeatures f ON e.problemID = f.problemID AND e.featureID = f.featureID WHERE e.modelID = ? AND e.featureID = ? AND e.zScore = 0";
+					sql.query(conn, featureSQL, [ modelID, featureID ], function(err, results, more) {
+						if(err) throw err;
+						if(!more) {				
+						
+							var response = { 
+								dvName: dvName
+								, dvMean: results[0].prediction
+								, featureName: results[0].featureName
+								, featureMean: results[0].mean
+								, plotData: plotData
+							};
+							
+							res.write(JSON.stringify(response));
+							res.end();
+						}
+					});
+				}
+			});
+		}
+	});
+	
 };

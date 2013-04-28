@@ -35,7 +35,8 @@ exports.init = function(app) {
 	
 	// models
 	app.get('/model', model.show);
-	app.get('/model/elasticity', model.getElasticityData)
+	app.get('/model/elasticity', model.getElasticityData);
+	app.get('/model/featureData', model.getFeatureData);
 	app.get('/predict', model.predict);
 	app.post('/predict/single', model.predictSingle);
 	app.get('/predict/single/result', model.getPrediction);

@@ -24,7 +24,7 @@ exports.show = function(req, res) {
 				if(!more) {
 					var problemProgress = 0.0;
 					var problemSize = 0.0;
-					var bestScore = Number.MIN_VALUE;
+					var bestScore = Number.NEGATIVE_INFINITY;
 					var bestModelID = -1;
 					
 					for(row in results) {
@@ -67,7 +67,7 @@ exports.getStatus = function(req, res) {
 			
 			var problemProgress = 0.0;
 			var problemSize = 0.0;
-			var bestScore = Number.MIN_VALUE;
+			var bestScore = Number.NEGATIVE_INFINITY;
 			var bestModelID = -1;
 			
 			for(row in results) {
